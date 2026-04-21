@@ -1,0 +1,1069 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style rel="stylesheet" type="text/css">@charset "utf-8";
+
+:root { --navy: #1B2A80; --navy-dark: #0F1B5C; --navy-deeper: #0A1340; --green: #7AB800; --green-light: #8FD400; --green-dark: #5E9000; --green-glow: rgba(122, 184, 0, 0.4); --black: #1A1A1A; --white: #FFFFFF; --gray-50: #F8F9FC; --gray-100: #F0F2F7; --gray-200: #E2E5EE; --gray-300: #C8CDD9; --gray-400: #9CA3B5; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937; --shadow-sm: 0 1px 3px rgba(27, 42, 128, 0.06); --shadow-md: 0 4px 20px rgba(27, 42, 128, 0.08); --shadow-lg: 0 8px 40px rgba(27, 42, 128, 0.12); --shadow-xl: 0 20px 60px rgba(27, 42, 128, 0.18); --shadow-green: 0 4px 20px rgba(122, 184, 0, 0.3); --radius-sm: 0.5rem; --radius-md: 0.75rem; --radius-lg: 1rem; --radius-xl: 1.5rem; --radius-2xl: 2rem; --radius-full: 100px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1); --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+*, ::before, ::after { box-sizing: border-box; margin: 0px; padding: 0px; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--gray-700); background: var(--white); line-height: 1.6; overflow-x: hidden; }
+
+img { max-width: 100%; height: auto; display: block; }
+
+a { text-decoration: none; color: inherit; }
+
+ul { list-style: none; }
+
+.container { max-width: 1200px; margin: 0px auto; padding: 0px 24px; }
+
+.scroll-progress { position: fixed; top: 0px; left: 0px; height: 3px; width: 0px; background: linear-gradient(90deg, var(--green), var(--green-light)); z-index: 10000; transition: width 0.1s linear; box-shadow: 0 0 10px var(--green-glow); }
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.reveal.revealed { opacity: 1; transform: translateY(0px); }
+
+.reveal--delay-1 { transition-delay: 0.1s; }
+
+.reveal--delay-2 { transition-delay: 0.2s; }
+
+.reveal--delay-3 { transition-delay: 0.3s; }
+
+h1, h2, h3, h4 { color: var(--navy); font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; }
+
+h1 { font-size: clamp(2.5rem, 5.5vw, 3.75rem); font-weight: 900; }
+
+h2 { font-size: clamp(1.875rem, 4vw, 2.875rem); margin-bottom: 1rem; }
+
+h3 { font-size: clamp(1.125rem, 2vw, 1.375rem); font-weight: 600; }
+
+p { font-size: 1.0625rem; line-height: 1.7; }
+
+.section-label { display: inline-flex; align-items: center; gap: 0.625rem; font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green-dark); margin-bottom: 1rem; }
+
+.section-label::before { content: ""; width: 28px; height: 2px; background: var(--green); border-radius: 1px; }
+
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 2rem; font-size: 1rem; font-weight: 600; font-family: inherit; border: none; border-radius: var(--radius-full); cursor: pointer; transition: var(--transition); white-space: nowrap; position: relative; overflow: hidden; }
+
+.btn--primary { background: var(--green); color: var(--white); box-shadow: var(--shadow-green); }
+
+.btn--primary::before { content: ""; position: absolute; top: 0px; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); transition: left 0.5s; }
+
+.btn--primary:hover::before { left: 100%; }
+
+.btn--primary:hover { background: var(--green-dark); box-shadow: rgba(122, 184, 0, 0.45) 0px 6px 30px; }
+
+.btn--glow { animation: 3s ease-in-out 0s infinite normal none running btnGlow; }
+
+@keyframes btnGlow { 
+  0%, 100% { box-shadow: rgba(122, 184, 0, 0.3) 0px 4px 20px; }
+  50% { box-shadow: rgba(122, 184, 0, 0.5) 0px 4px 30px, rgba(122, 184, 0, 0.15) 0px 0px 60px; }
+}
+
+.btn--large { padding: 1rem 2.5rem; font-size: 1.0625rem; }
+
+.btn--icon svg { width: 20px; height: 20px; transition: transform var(--transition); }
+
+.btn--icon:hover svg { transform: translateX(4px); }
+
+.section-curve { position: absolute; bottom: -1px; left: 0px; right: 0px; z-index: 3; }
+
+.section-curve svg { display: block; width: 100%; height: 80px; }
+
+.header { position: fixed; top: 0px; left: 0px; right: 0px; z-index: 1000; padding: 1.25rem 0px; transition: var(--transition); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: rgba(0, 0, 0, 0.06) 0px 1px 0px; }
+
+.header--scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(24px) saturate(180%); box-shadow: 0 1px 0 rgba(0,0,0,0.06), var(--shadow-md); padding: 0.75rem 0px; }
+
+.header__inner { display: flex; align-items: center; justify-content: space-between; }
+
+.header__logo { display: flex; align-items: center; gap: 0.5rem; }
+
+.header__logo-icon { height: 36px; width: auto; }
+
+.header__logo-text { font-size: 1.5rem; font-weight: 800; color: var(--black); letter-spacing: -0.02em; transition: var(--transition); }
+
+.header__nav { display: flex; align-items: center; gap: 2.25rem; }
+
+.header__nav a { font-size: 0.9375rem; font-weight: 500; color: var(--gray-600); transition: var(--transition); position: relative; padding: 0.25rem 0px; }
+
+.header__nav a::after { content: ""; position: absolute; bottom: -2px; left: 50%; width: 0px; height: 2px; background: var(--green); transition: var(--transition); transform: translateX(-50%); border-radius: 1px; }
+
+.header__nav a:hover::after { width: 100%; }
+
+.header__nav a:hover { color: var(--navy); }
+
+.header__cta .btn--primary { padding: 0.625rem 1.5rem; font-size: 0.875rem; }
+
+.header__hamburger { display: none; flex-direction: column; gap: 6px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 1001; }
+
+.header__hamburger span { width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: var(--transition); transform-origin: center center; }
+
+.header__hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+
+.header__hamburger.active span:nth-child(2) { opacity: 0; }
+
+.header__hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+.mobile-nav { display: none; position: fixed; inset: 0px; background: var(--navy-deeper); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; visibility: hidden; transition: var(--transition); }
+
+.mobile-nav.active { opacity: 1; visibility: visible; }
+
+.mobile-nav a { font-size: 1.5rem; color: var(--white); font-weight: 500; }
+
+.mobile-nav .btn--primary { margin-top: 1rem; }
+
+.hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; padding: 120px 0px 60px; }
+
+.hero__bg { position: absolute; inset: 0px; z-index: 0; }
+
+.hero__bg-img { width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+
+.hero__bg-overlay { position: absolute; inset: 0px; background: linear-gradient(135deg, rgba(10, 19, 64, 0.88) 0%, rgba(15, 27, 92, 0.82) 40%, rgba(27, 42, 128, 0.75) 70%, rgba(27, 42, 128, 0.65) 100%); }
+
+.hero__orb { position: absolute; border-radius: 50%; filter: blur(80px); will-change: transform; z-index: 1; }
+
+.hero__orb--1 { width: 500px; height: 500px; background: rgba(122, 184, 0, 0.1); top: -10%; right: -5%; animation: 12s ease-in-out 0s infinite normal none running orbFloat; }
+
+.hero__orb--2 { width: 400px; height: 400px; background: rgba(122, 184, 0, 0.06); bottom: -15%; left: -8%; animation: 15s ease-in-out 0s infinite reverse none running orbFloat; }
+
+@keyframes orbFloat { 
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+.hero__layout { position: relative; z-index: 2; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3.5rem; align-items: center; }
+
+.hero__badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(122, 184, 0, 0.1); border: 1px solid rgba(122, 184, 0, 0.25); padding: 0.5rem 1.25rem; border-radius: var(--radius-full); font-size: 0.8125rem; font-weight: 600; color: var(--green-light); margin-bottom: 1.75rem; position: relative; }
+
+.hero__badge svg { width: 16px; height: 16px; margin-left: 12px; }
+
+.hero__badge-pulse { position: absolute; left: 12px; width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: 2s ease 0s infinite normal none running pulse; }
+
+@keyframes pulse { 
+  0% { box-shadow: 0 0 0 0 var(--green-glow); }
+  70% { box-shadow: transparent 0px 0px 0px 12px; }
+  100% { box-shadow: transparent 0px 0px 0px 0px; }
+}
+
+.hero__title { color: var(--white); margin-bottom: 1.5rem; }
+
+.hero__title-line { display: block; }
+
+.hero__title-accent { background-image: ; background-position-x: ; background-position-y: ; background-size: ; background-repeat: ; background-attachment: ; background-origin: ; background-color: ; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.hero__sub { font-size: 1.125rem; color: rgba(255, 255, 255, 0.75); margin-bottom: 2.25rem; line-height: 1.7; max-width: 540px; }
+
+.hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+.hero__right { position: relative; }
+
+.hero__card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(24px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-xl); padding: 2rem; transition: transform 0.5s; }
+
+.hero__card-title { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.625rem; }
+
+.hero__card-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: 2s ease 0s infinite normal none running pulse; }
+
+.hero__card-feature { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.75rem 0px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+
+.hero__card-feature:last-child { border-bottom: none; }
+
+.hero__card-icon { width: 36px; height: 36px; min-width: 36px; background: rgba(122, 184, 0, 0.12); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+
+.hero__card-icon svg { width: 18px; height: 18px; color: var(--green); }
+
+.hero__card-feature h4 { font-size: 0.875rem; color: var(--white); margin-bottom: 0.125rem; }
+
+.hero__card-feature p { font-size: 0.8125rem; color: rgba(255, 255, 255, 0.55); line-height: 1.4; }
+
+.hero__float { position: absolute; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 0.625rem 1rem; display: flex; align-items: center; gap: 0.5rem; animation: 6s ease-in-out 0s infinite normal none running float; z-index: 5; }
+
+.hero__float--1 { top: 10px; right: -10px; animation-delay: 0s; }
+
+.hero__float--2 { bottom: -20px; left: 50px; animation-delay: 2s; }
+
+.hero__float-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+
+.hero__float span { font-size: 0.8125rem; font-weight: 600; color: var(--white); }
+
+@keyframes float { 
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.hero__stats-bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 0px; margin-top: 4rem; background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(20px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-2xl); padding: 2rem 3rem; }
+
+.hero__stat { text-align: center; flex: 1 1 0%; }
+
+.hero__stat-divider { width: 1px; height: 48px; background: rgba(255, 255, 255, 0.12); margin: 0px 1.5rem; }
+
+.hero__stat-value { font-size: 2rem; font-weight: 900; color: var(--green); letter-spacing: -0.02em; display: inline; line-height: 1; }
+
+.hero__stat-suffix { font-size: 1.125rem; font-weight: 700; color: var(--green-light); display: inline; }
+
+.hero__stat-label { font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25rem; }
+
+.problem { padding: 100px 0px; background: var(--gray-50); position: relative; }
+
+.problem__layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-bottom: 3rem; }
+
+.problem__left { position: sticky; top: 120px; align-self: start; }
+
+.problem__desc { color: var(--gray-500); margin-top: 1.25rem; font-size: 1.0625rem; }
+
+.problem__image-block { margin-top: 2rem; position: relative; border-radius: var(--radius-xl); overflow: hidden; }
+
+.problem__image { width: 100%; height: 280px; object-fit: cover; transition: transform var(--transition-slow); }
+
+.problem__image-block:hover .problem__image { transform: scale(1.03); }
+
+.problem__right { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.problem__card { background: var(--white); border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--gray-200); transition: var(--transition); position: relative; overflow: hidden; cursor: default; }
+
+.problem__card-number { font-size: 2.5rem; font-weight: 900; color: var(--gray-100); line-height: 1; margin-bottom: 0.75rem; transition: var(--transition); }
+
+.problem__card:hover .problem__card-number { color: rgba(239, 68, 68, 0.1); }
+
+.problem__card::after { content: ""; position: absolute; top: 0px; left: 0px; width: 3px; height: 0px; background: linear-gradient(rgb(239, 68, 68), rgb(249, 115, 22)); transition: height var(--transition); }
+
+.problem__card:hover { border-color: transparent; box-shadow: var(--shadow-lg); }
+
+.problem__card:hover::after { height: 100%; }
+
+.problem__card-icon { width: 44px; height: 44px; background: rgb(254, 242, 242); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; transition: var(--transition); }
+
+.problem__card:hover .problem__card-icon { background: rgb(254, 226, 226); transform: scale(1.05); }
+
+.problem__card-icon svg { width: 22px; height: 22px; color: rgb(239, 68, 68); }
+
+.problem__card h3 { font-size: 1rem; color: var(--navy); margin-bottom: 0.5rem; }
+
+.problem__card p { font-size: 0.875rem; color: var(--gray-500); line-height: 1.5; }
+
+.problem__cta { text-align: center; }
+
+.problem__cta-inner { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-2xl); padding: 2.5rem; display: inline-flex; flex-direction: column; align-items: center; gap: 1.25rem; box-shadow: var(--shadow-md); }
+
+.problem__soundbite { font-size: 1.375rem; font-weight: 700; color: var(--navy); }
+
+.guide { padding: 100px 0px; background: var(--white); }
+
+.guide__top { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-bottom: 3.5rem; }
+
+.guide__header p { color: var(--gray-500); margin-top: 1rem; }
+
+.guide__highlight { font-weight: 600; color: var(--navy); margin-top: 0.75rem; display: block; }
+
+.guide__hero-image { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-lg); position: relative; }
+
+.guide__image { width: 100%; height: 340px; object-fit: cover; transition: transform var(--transition-slow); }
+
+.guide__hero-image:hover .guide__image { transform: scale(1.03); }
+
+.guide__features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 3.5rem; }
+
+.guide__feature { display: flex; gap: 1.25rem; padding: 1.75rem; background: var(--gray-50); border-radius: var(--radius-lg); border: 1px solid var(--gray-100); transition: var(--transition); cursor: default; }
+
+.guide__feature:hover { background: var(--white); border-color: rgba(122, 184, 0, 0.3); box-shadow: rgba(122, 184, 0, 0.08) 0px 8px 30px; }
+
+.guide__feature--wide { grid-column: 1 / -1; flex-wrap: wrap; }
+
+.guide__feature-icon { width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, var(--green), var(--green-light)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; box-shadow: rgba(122, 184, 0, 0.25) 0px 4px 12px; transition: var(--transition); }
+
+.guide__feature:hover .guide__feature-icon { transform: scale(1.1) rotate(-5deg); }
+
+.guide__feature-icon svg { width: 24px; height: 24px; color: var(--white); }
+
+.guide__feature h3 { font-size: 1.0625rem; color: var(--navy); margin-bottom: 0.375rem; }
+
+.guide__feature p { font-size: 0.9375rem; color: var(--gray-500); line-height: 1.6; }
+
+.guide__feature-cities { display: flex; gap: 0.5rem; flex-wrap: wrap; width: 100%; margin-top: 0.5rem; padding-left: 72px; }
+
+.guide__city-tag { padding: 0.375rem 1rem; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-full); font-size: 0.8125rem; font-weight: 600; color: var(--navy); transition: var(--transition); }
+
+.guide__city-tag:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+.guide__stats { display: grid; grid-template-columns: repeat(4, 1fr); background: linear-gradient(135deg, var(--navy-dark), var(--navy)); border-radius: var(--radius-2xl); overflow: hidden; position: relative; }
+
+.guide__stats::before { content: ""; position: absolute; inset: 0px; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+
+.guide__stat { text-align: center; padding: 3rem 1.5rem; position: relative; }
+
+.guide__stat:not(:last-child)::after { content: ""; position: absolute; top: 25%; right: 0px; height: 50%; width: 1px; background: rgba(255, 255, 255, 0.12); }
+
+.guide__stat-value { font-size: 2.5rem; font-weight: 900; color: var(--green); letter-spacing: -0.02em; line-height: 1; display: inline; }
+
+.guide__stat-suffix { font-size: 1.5rem; font-weight: 800; color: var(--green-light); display: inline; }
+
+.guide__stat-label { font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); font-weight: 500; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.guide__cta { text-align: center; margin-top: 3.5rem; }
+
+.plan { padding: 100px 0px; background: var(--gray-50); position: relative; overflow: hidden; }
+
+.plan__bg-image { position: absolute; inset: 0px; opacity: 0.03; }
+
+.plan__bg-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.plan__header { text-align: center; max-width: 600px; margin: 0px auto 4rem; position: relative; z-index: 2; }
+
+.plan__steps { display: flex; align-items: flex-start; justify-content: center; gap: 0px; position: relative; z-index: 2; }
+
+.plan__step-connector { display: flex; align-items: center; padding-top: 40px; opacity: 0.5; }
+
+.plan__step { text-align: center; position: relative; flex: 1 1 0%; max-width: 320px; padding: 2rem; background: var(--white); border-radius: var(--radius-xl); border: 1px solid var(--gray-200); transition: var(--transition); }
+
+.plan__step:hover { border-color: transparent; box-shadow: var(--shadow-xl); }
+
+.plan__step-number { width: 80px; height: 80px; margin: 0px auto 1.5rem; background: var(--gray-50); border: 2px solid var(--green); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: rgba(122, 184, 0, 0.08) 0px 0px 0px 8px; transition: var(--transition); }
+
+.plan__step:hover .plan__step-number { background: var(--green); box-shadow: rgba(122, 184, 0, 0.12) 0px 0px 0px 12px; transform: scale(1.08); }
+
+.plan__step:hover .plan__step-num { color: var(--white); }
+
+.plan__step:hover .plan__step-icon svg { color: var(--white); }
+
+.plan__step-num { font-size: 0.875rem; font-weight: 900; color: var(--green); letter-spacing: 0.05em; transition: var(--transition); }
+
+.plan__step-icon { margin-top: 0.125rem; }
+
+.plan__step-icon svg { width: 24px; height: 24px; color: var(--navy); transition: var(--transition); }
+
+.plan__step h3 { font-size: 1.125rem; color: var(--navy); margin-bottom: 0.75rem; }
+
+.plan__step p { font-size: 0.9375rem; color: var(--gray-500); line-height: 1.6; }
+
+.plan__cta { text-align: center; margin-top: 3.5rem; position: relative; z-index: 2; }
+
+.success { padding: 100px 0px; background: var(--white); }
+
+.success__header { max-width: 650px; margin-bottom: 3rem; }
+
+.success__header p { color: var(--gray-500); margin-top: 1rem; }
+
+.success__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+
+.success__card { border-radius: var(--radius-xl); background: var(--gray-50); border: 1px solid var(--gray-100); overflow: hidden; transition: var(--transition); cursor: default; }
+
+.success__card:hover { background: var(--white); border-color: transparent; box-shadow: var(--shadow-xl); }
+
+.success__card-image { overflow: hidden; height: 200px; }
+
+.success__card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-slow); }
+
+.success__card:hover .success__card-image img { transform: scale(1.06); }
+
+.success__card-body { padding: 1.75rem; }
+
+.success__card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+
+.success__card-icon { width: 44px; height: 44px; min-width: 44px; background: linear-gradient(135deg, rgba(27, 42, 128, 0.08), rgba(27, 42, 128, 0.04)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+
+.success__card:hover .success__card-icon { background: linear-gradient(135deg, var(--green), var(--green-light)); }
+
+.success__card-icon svg { width: 22px; height: 22px; color: var(--navy); transition: var(--transition); }
+
+.success__card:hover .success__card-icon svg { color: var(--white); }
+
+.success__card h3 { font-size: 1.0625rem; color: var(--navy); }
+
+.success__card p { font-size: 0.9375rem; color: var(--gray-500); line-height: 1.6; }
+
+.cta { padding: 120px 0px; position: relative; overflow: hidden; }
+
+.cta__bg-image { position: absolute; inset: 0px; }
+
+.cta__bg-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.cta__bg-image::after { content: ""; position: absolute; inset: 0px; background: linear-gradient(135deg, rgba(10, 19, 64, 0.92) 0%, rgba(27, 42, 128, 0.88) 50%, rgba(15, 27, 92, 0.92) 100%); }
+
+.cta__inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+
+.cta__content h2 { color: var(--white); font-size: clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom: 1.5rem; }
+
+.cta__trial { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(122, 184, 0, 0.12); border: 1px solid rgba(122, 184, 0, 0.25); padding: 0.5rem 1.25rem; border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 600; color: var(--green); margin-bottom: 2rem; }
+
+.cta__desc { font-size: 1.0625rem; color: rgba(255, 255, 255, 0.65); margin-bottom: 2rem; max-width: 500px; line-height: 1.7; }
+
+.cta__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+.cta__card { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(24px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-2xl); padding: 2.5rem; transition: var(--transition); }
+
+.cta__card-title { font-size: 1.125rem; font-weight: 700; color: var(--white); margin-bottom: 1.75rem; }
+
+.cta__card-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.cta__card-item { display: flex; align-items: flex-start; gap: 0.75rem; transition: var(--transition); }
+
+.cta__card-item:hover { transform: translateX(4px); }
+
+.cta__card-check { width: 24px; height: 24px; min-width: 24px; background: rgba(122, 184, 0, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+
+.cta__card-check svg { width: 14px; height: 14px; color: var(--green); }
+
+.cta__card-item p { font-size: 0.9375rem; color: rgba(255, 255, 255, 0.75); line-height: 1.5; }
+
+.cta__card-note { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.8125rem; color: rgba(255, 255, 255, 0.45); font-weight: 500; }
+
+.footer { background: var(--white); padding: 3rem 0px 2rem; border-top: 1px solid var(--gray-200); }
+
+.footer__inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+
+.footer__logo { display: flex; align-items: center; gap: 0.5rem; }
+
+.footer__logo-icon { height: 30px; width: auto; }
+
+.footer__logo-text { font-size: 1.375rem; font-weight: 800; color: var(--black); letter-spacing: -0.02em; }
+
+.footer__copy { font-size: 0.8125rem; color: var(--gray-500); }
+
+@media (max-width: 1024px) {
+  .hero__layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  .hero__right { order: -1; }
+  .hero__stats-bar { flex-wrap: wrap; gap: 1rem; padding: 1.5rem 2rem; }
+  .hero__stat-divider { display: none; }
+  .problem__layout { grid-template-columns: 1fr; }
+  .problem__left { position: static; }
+  .problem__right { grid-template-columns: repeat(3, 1fr); }
+  .guide__top { grid-template-columns: 1fr; }
+  .guide__hero-image { max-width: 100%; }
+  .guide__features { grid-template-columns: 1fr; }
+  .guide__stats { grid-template-columns: repeat(2, 1fr); }
+  .guide__stat:nth-child(2)::after { display: none; }
+  .plan__steps { flex-wrap: wrap; gap: 1.5rem; }
+  .plan__step-connector { display: none; }
+  .plan__step { max-width: 100%; flex: 1 1 280px; }
+  .cta__inner { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+@media (max-width: 768px) {
+  .header__nav, .header__cta { display: none; }
+  .header__hamburger { display: flex; }
+  .mobile-nav { display: flex; }
+  .hero { padding: 100px 0px 80px; min-height: auto; }
+  .hero h1 { font-size: 2rem; }
+  .hero__float { display: none; }
+  .hero__stats-bar { padding: 1.25rem; }
+  .hero__stat-value { font-size: 1.5rem; }
+  .section-curve svg { height: 50px; }
+  .problem__right { grid-template-columns: 1fr; }
+  .problem__image-block { display: none; }
+  .plan__steps { flex-direction: column; align-items: center; }
+  .plan__step { max-width: 400px; width: 100%; }
+  .success__grid { grid-template-columns: 1fr; }
+  .guide__stats { grid-template-columns: 1fr; }
+  .guide__stat::after { display: none !important; }
+  .guide__stat { padding: 1.5rem; }
+  .guide__feature-cities { padding-left: 0px; }
+  .footer__inner { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero__actions { flex-direction: column; }
+  .btn--large { width: 100%; justify-content: center; }
+  .cta__actions { flex-direction: column; }
+  .problem__right { grid-template-columns: 1fr; }
+}</style>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlexiPL — On-Demand Pallet Storage for Australian Importers</title>
+  <meta name="description" content="Australia's first on-demand pallet storage marketplace. Fully digital, built specifically for importers. Find and book pallet storage from our national network of accredited warehouses.">
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link rel="icon" href="https://flexipl.com.au/logo512.png" type="image/png">
+  
+</head>
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="https://flexipl-importers.vercel.app/#" class="header__logo">
+        <img src="https://flexipl.com.au/logo512.png" alt="FlexiPL icon" class="header__logo-icon">
+        <span class="header__logo-text">FlexiPL</span>
+      </a>
+      <nav class="header__nav">
+        <a href="https://flexipl-importers.vercel.app/#problem">Why FlexiPL</a>
+        <a href="https://flexipl-importers.vercel.app/#guide">How It Works</a>
+        <a href="https://flexipl-importers.vercel.app/#plan">Get Started</a>
+        <a href="https://flexipl-importers.vercel.app/#success">Use Cases</a>
+      </nav>
+      <div class="header__cta">
+        <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary magnetic-btn" target="_blank">
+          <span>Get Instant Quote</span>
+        </a>
+      </div>
+      <button class="header__hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="https://flexipl-importers.vercel.app/#problem">Why FlexiPL</a>
+    <a href="https://flexipl-importers.vercel.app/#guide">How It Works</a>
+    <a href="https://flexipl-importers.vercel.app/#plan">Get Started</a>
+    <a href="https://flexipl-importers.vercel.app/#success">Use Cases</a>
+    <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary btn--large" target="_blank">Get Instant Quote</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <img src="https://images.pexels.com/photos/4483774/pexels-photo-4483774.jpeg?w=1920&amp;h=1080&amp;fit=crop&amp;auto=compress" alt="Warehouse aisle with pallet racking and worker" class="hero__bg-img" loading="eager">
+      <div class="hero__bg-overlay"></div>
+    </div>
+    <div class="hero__orb hero__orb--1"></div>
+    <div class="hero__orb hero__orb--2"></div>
+    <div class="container">
+      <div class="hero__layout">
+        <div class="hero__content reveal revealed">
+          <div class="hero__badge">
+            <span class="hero__badge-pulse"></span>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Australia's First On-Demand Pallet Marketplace
+          </div>
+          <h1 class="hero__title">
+            <span class="hero__title-line">On-Demand Pallet Storage</span>
+            <span class="hero__title-line">for Australian Importers</span>
+            <span class="hero__title-line hero__title-accent">Without the 12-Month Lock-In.</span>
+          </h1>
+          <p class="hero__sub">Australia's first on-demand pallet storage marketplace. Fully digital, built specifically for importers. Find and book pallet storage from our national network of accredited warehouses.</p>
+          <div class="hero__actions">
+            <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary btn--large btn--icon btn--glow magnetic-btn" target="_blank">
+              <span>Get Instant Quote</span>
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero__right reveal reveal--delay-2 revealed">
+          <div class="hero__card tilt-card">
+            <div class="hero__card-title">
+              <span class="hero__card-dot"></span>
+              Why importers choose FlexiPL
+            </div>
+            <div class="hero__card-feature">
+              <div class="hero__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <div>
+                <h4>Instant Activation</h4>
+                <p>Book today, store tomorrow. No calls, no site visits.</p>
+              </div>
+            </div>
+            <div class="hero__card-feature">
+              <div class="hero__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div>
+                <h4>Transparent Daily Pricing</h4>
+                <p>See your pallet daily rates before you commit. No hidden fees.</p>
+              </div>
+            </div>
+            <div class="hero__card-feature">
+              <div class="hero__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+              </div>
+              <div>
+                <h4>Real-Time Tracking</h4>
+                <p>Monitor every pallet in real-time — live visibility, always.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero__float hero__float--1">
+            <div class="hero__float-dot"></div>
+            <span>Live Pricing Active</span>
+          </div>
+          <div class="hero__float hero__float--2">
+            <div class="hero__float-dot"></div>
+            <span>99.9% Uptime</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero__stats-bar reveal revealed">
+        <div class="hero__stat">
+          <div class="hero__stat-value" data-count="200" data-animated="true">-189</div>
+          <div class="hero__stat-suffix">k+ sqm</div>
+          <div class="hero__stat-label">Warehouse Space</div>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <div class="hero__stat-value" data-count="50000" data-animated="true">-47,038</div>
+          <div class="hero__stat-suffix">+</div>
+          <div class="hero__stat-label">Pallet Capacity</div>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <div class="hero__stat-value" data-count="5" data-animated="true">-5</div>
+          <div class="hero__stat-suffix"> Cities</div>
+          <div class="hero__stat-label">National Network</div>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <div class="hero__stat-value" data-count="99.9" data-animated="true">-94.0</div>
+          <div class="hero__stat-suffix">%</div>
+          <div class="hero__stat-label">Uptime</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-curve">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,0 C480,100 960,100 1440,0 L1440,100 L0,100 Z" fill="var(--gray-50)"></path></svg>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem" id="problem">
+    <div class="container">
+      <div class="problem__layout">
+        <div class="problem__left reveal">
+          <div class="section-label">The Problem</div>
+          <h2>Still Scrambling for Storage When a Container Lands?</h2>
+          <p class="problem__desc">A container clears early. Your shipment arrives ahead of schedule. You need pallet space in a city where you don't have a depot.</p>
+          <div class="problem__image-block">
+            <img src="https://images.pexels.com/photos/4487363/pexels-photo-4487363.jpeg?w=600&amp;h=400&amp;fit=crop&amp;auto=compress" alt="Pallets wrapped and stored on warehouse racking" class="problem__image" loading="lazy">
+          </div>
+        </div>
+        <div class="problem__right">
+          <div class="problem__card reveal reveal--delay-1" data-tilt="">
+            <div class="problem__card-number">01</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3>Can't Mobilise Fast Enough</h3>
+            <p>Traditional 3PLs take days to quote — by then your container is already waiting.</p>
+          </div>
+          <div class="problem__card reveal reveal--delay-2" data-tilt="">
+            <div class="problem__card-number">02</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+            </div>
+            <h3>Peak Season Gridlock</h3>
+            <p>When demand hits its peak, the market is full — and slow to onboard.</p>
+          </div>
+          <div class="problem__card reveal reveal--delay-3" data-tilt="">
+            <div class="problem__card-number">03</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+            </div>
+            <h3>Cross-Dock Overflow</h3>
+            <p>A new client lands and pallets sit at your depot with nowhere to go.</p>
+          </div>
+          <div class="problem__card reveal reveal--delay-1" data-tilt="">
+            <div class="problem__card-number">04</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h3>Locked-In Losses</h3>
+            <p>You're in a 12-month lease but only need the space for weeks.</p>
+          </div>
+          <div class="problem__card reveal reveal--delay-2" data-tilt="">
+            <div class="problem__card-number">05</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3>Hidden Fees</h3>
+            <p>Costs only surface after you've committed — minimums, penalties, paperwork.</p>
+          </div>
+          <div class="problem__card reveal reveal--delay-3" data-tilt="">
+            <div class="problem__card-number">06</div>
+            <div class="problem__card-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+            </div>
+            <h3>No Visibility</h3>
+            <p>No real-time visibility on what's in storage or where.</p>
+          </div>
+        </div>
+      </div>
+      <div class="problem__cta reveal">
+        <div class="problem__cta-inner">
+          <p class="problem__soundbite">Does this headache sound familiar?</p>
+          <a href="https://flexipl-importers.vercel.app/#guide" class="btn btn--primary btn--large btn--icon btn--glow magnetic-btn">
+            <span>See a Simpler Way to Handle Overflow</span>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="guide" id="guide">
+    <div class="container">
+      <div class="guide__top reveal">
+        <div class="guide__header">
+          <div class="section-label">The Solution</div>
+          <h2>Simple, Flexible Storage for Australian Importers</h2>
+          <p>FlexiPL is Australia's first on-demand pallet storage marketplace. Fully digital, built specifically for importers and the short-term storage that moves with their business.</p>
+          <p class="guide__highlight">What you get:</p>
+        </div>
+        <div class="guide__hero-image">
+          <img src="https://images.pexels.com/photos/4483608/pexels-photo-4483608.jpeg?w=560&amp;h=380&amp;fit=crop&amp;auto=compress" alt="Warehouse shelves with pallet storage racks" class="guide__image" loading="lazy">
+        </div>
+      </div>
+      <div class="guide__features">
+        <div class="guide__feature reveal reveal--delay-1 tilt-card">
+          <div class="guide__feature-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <div>
+            <h3>Instant Activation</h3>
+            <p>Book pallet space anytime. No calls, no site visits.</p>
+          </div>
+        </div>
+        <div class="guide__feature reveal reveal--delay-2 tilt-card">
+          <div class="guide__feature-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <div>
+            <h3>Transparent Pricing</h3>
+            <p>See your pallet daily rates before you commit. No hidden fees.</p>
+          </div>
+        </div>
+        <div class="guide__feature reveal reveal--delay-3 tilt-card">
+          <div class="guide__feature-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
+          <div>
+            <h3>Daily Billing</h3>
+            <p>Pay for what you use. Scale with 24-hour notice. No lock-in.</p>
+          </div>
+        </div>
+        <div class="guide__feature reveal reveal--delay-1 tilt-card">
+          <div class="guide__feature-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          </div>
+          <div>
+            <h3>Real-Time Tracking</h3>
+            <p>Monitor every pallet, the visibility, the accuracy, the service.</p>
+          </div>
+        </div>
+        <div class="guide__feature guide__feature--wide reveal reveal--delay-2 tilt-card">
+          <div class="guide__feature-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <h3>National Reach</h3>
+            <p>Melbourne, Sydney, Brisbane, Adelaide, Perth — one platform.</p>
+          </div>
+          <div class="guide__feature-cities">
+            <span class="guide__city-tag">Melbourne</span>
+            <span class="guide__city-tag">Sydney</span>
+            <span class="guide__city-tag">Brisbane</span>
+            <span class="guide__city-tag">Adelaide</span>
+            <span class="guide__city-tag">Perth</span>
+          </div>
+        </div>
+      </div>
+      <div class="guide__stats reveal">
+        <div class="guide__stat">
+          <div class="guide__stat-value" data-count="200">0</div>
+          <div class="guide__stat-suffix">k+ sqm</div>
+          <div class="guide__stat-label">Warehouse Space</div>
+        </div>
+        <div class="guide__stat">
+          <div class="guide__stat-value" data-count="50000">0</div>
+          <div class="guide__stat-suffix">+</div>
+          <div class="guide__stat-label">Pallet Capacity</div>
+        </div>
+        <div class="guide__stat">
+          <div class="guide__stat-value" data-count="5">0</div>
+          <div class="guide__stat-suffix"> Cities</div>
+          <div class="guide__stat-label">National Network</div>
+        </div>
+        <div class="guide__stat">
+          <div class="guide__stat-value" data-count="74.9">0</div>
+          <div class="guide__stat-suffix">%</div>
+          <div class="guide__stat-label">Pallets on Pallets</div>
+        </div>
+      </div>
+      <div class="guide__cta reveal">
+        <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary btn--large btn--icon btn--glow magnetic-btn" target="_blank">
+          <span>See Live Pricing</span>
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="plan" id="plan">
+    <div class="plan__bg-image">
+      <img src="https://images.pexels.com/photos/29454379/pexels-photo-29454379.jpeg?w=1400&amp;h=600&amp;fit=crop&amp;auto=compress" alt="Expansive warehouse aisle filled with pallets and products" loading="lazy">
+    </div>
+    <div class="container">
+      <div class="plan__header reveal">
+        <div class="section-label">Getting Started</div>
+        <h2>Get Started in 3 Simple Steps</h2>
+      </div>
+      <div class="plan__steps">
+        <div class="plan__step reveal reveal--delay-1 tilt-card">
+          <div class="plan__step-number">
+            <span class="plan__step-num">01</span>
+            <div class="plan__step-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            </div>
+          </div>
+          <h3>Get an Instant Quote</h3>
+          <p>Visit flexipl.com.au, select your storage size and duration, and your location. See live pricing instantly — no forms, no obligations.</p>
+        </div>
+        <div class="plan__step-connector">
+          <svg width="60" height="24" viewBox="0 0 60 24"><path d="M0 12h50m-8-8l8 8-8 8" stroke="var(--green)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+        <div class="plan__step reveal reveal--delay-2 tilt-card">
+          <div class="plan__step-number">
+            <span class="plan__step-num">02</span>
+            <div class="plan__step-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            </div>
+          </div>
+          <h3>Choose Additional Services</h3>
+          <p>Add pick and pack, labelling, handling, or more as needed. Everything is set up and managed on the platform.</p>
+        </div>
+        <div class="plan__step-connector">
+          <svg width="60" height="24" viewBox="0 0 60 24"><path d="M0 12h50m-8-8l8 8-8 8" stroke="var(--green)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+        <div class="plan__step reveal reveal--delay-3 tilt-card">
+          <div class="plan__step-number">
+            <span class="plan__step-num">03</span>
+            <div class="plan__step-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+          </div>
+          <h3>Book Instantly</h3>
+          <p>Confirm your booking online. Storage activates next business day. You'll see everything from day one.</p>
+        </div>
+      </div>
+      <div class="plan__cta reveal">
+        <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary btn--large btn--icon btn--glow magnetic-btn" target="_blank">
+          <span>See Live Pricing</span>
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="success" id="success">
+    <div class="container">
+      <div class="success__header reveal">
+        <div class="section-label">Use Cases</div>
+        <h2>Storage That Fits How You Actually Operate</h2>
+        <p>Whether it's a one-off overflow or ongoing staging across multiple cities, FlexiPL adapts to your operation.</p>
+      </div>
+      <div class="success__grid">
+        <div class="success__card reveal reveal--delay-1 tilt-card">
+          <div class="success__card-image">
+            <img src="https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?w=400&amp;h=240&amp;fit=crop&amp;auto=compress" alt="Forklift operator moving pallets in warehouse" loading="lazy">
+          </div>
+          <div class="success__card-body">
+            <div class="success__card-header">
+              <div class="success__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+              </div>
+              <h3>Container Overflow</h3>
+            </div>
+            <p>Clear it from your depot into destination storage, same city, same day.</p>
+          </div>
+        </div>
+        <div class="success__card reveal reveal--delay-2 tilt-card">
+          <div class="success__card-image">
+            <img src="https://images.pexels.com/photos/1267327/pexels-photo-1267327.jpeg?w=400&amp;h=240&amp;fit=crop&amp;auto=compress" alt="Forklift at warehouse loading dock entrance" loading="lazy">
+          </div>
+          <div class="success__card-body">
+            <div class="success__card-header">
+              <div class="success__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <h3>New Importer Mobilisation</h3>
+            </div>
+            <p>With the national platform, activate storage within 24 hours. No 3-week onboarding.</p>
+          </div>
+        </div>
+        <div class="success__card reveal reveal--delay-3 tilt-card">
+          <div class="success__card-image">
+            <img src="https://images.pexels.com/photos/10697106/pexels-photo-10697106.jpeg?w=400&amp;h=240&amp;fit=crop&amp;auto=compress" alt="Dark warehouse interior with pallets on shelving" loading="lazy">
+          </div>
+          <div class="success__card-body">
+            <div class="success__card-header">
+              <div class="success__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+              </div>
+              <h3>Pre-Season Staging</h3>
+            </div>
+            <p>Stage before the rush. Book daily rates after. Pay only for what you use.</p>
+          </div>
+        </div>
+        <div class="success__card reveal reveal--delay-1 tilt-card">
+          <div class="success__card-image">
+            <img src="https://images.pexels.com/photos/29454379/pexels-photo-29454379.jpeg?w=400&amp;h=240&amp;fit=crop&amp;auto=compress" alt="Warehouse aisle with boxes stacked on pallet racks" loading="lazy">
+          </div>
+          <div class="success__card-body">
+            <div class="success__card-header">
+              <div class="success__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              </div>
+              <h3>Multi-City Footprint</h3>
+            </div>
+            <p>No depot in a new city? Get national pallet storage without committing to a lease.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta" id="cta">
+    <div class="cta__bg-image">
+      <img src="https://images.pexels.com/photos/11500419/pexels-photo-11500419.jpeg?w=1400&amp;h=700&amp;fit=crop&amp;auto=compress" alt="Forklifts operating in large warehouse facility" loading="lazy">
+    </div>
+    <div class="container">
+      <div class="cta__inner">
+        <div class="cta__content reveal">
+          <div class="cta__trial">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path></svg>
+            1 Week Free in Your First 4 Weeks — Up to 100 Pallets
+          </div>
+          <h2>Ready to Simplify Your Logistics?</h2>
+          <p class="cta__desc">Join hundreds of Australian businesses using FlexiPL. Get started in minutes.<br>Claim your free week — up to 100 pallets, on us.</p>
+          <div class="cta__actions">
+            <a href="https://flexipl.com.au/#instant-quote" class="btn btn--primary btn--large btn--icon btn--glow magnetic-btn" target="_blank">
+              <span>Book Storage Now</span>
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+          </div>
+        </div>
+        <div class="cta__card reveal reveal--delay-2 tilt-card">
+          <div class="cta__card-title">What's included in your free trial:</div>
+          <div class="cta__card-list">
+            <div class="cta__card-item">
+              <div class="cta__card-check">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <p>Store up to 100 pallets for 7 days, completely free</p>
+            </div>
+            <div class="cta__card-item">
+              <div class="cta__card-check">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <p>Full access to the platform</p>
+            </div>
+            <div class="cta__card-item">
+              <div class="cta__card-check">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <p>Real-time inventory visibility from day one</p>
+            </div>
+            <div class="cta__card-item">
+              <div class="cta__card-check">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+              <p>No credit card. No contracts. No obligation.</p>
+            </div>
+          </div>
+          <div class="cta__card-note">Ready to simplify your logistics? Start in under 2 minutes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a href="https://flexipl-importers.vercel.app/#" class="footer__logo">
+        <img src="https://flexipl.com.au/logo512.png" alt="FlexiPL icon" class="footer__logo-icon">
+        <span class="footer__logo-text">FlexiPL</span>
+      </a>
+      <div class="footer__copy">© 2026 FlexiPL. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    const scrollProgress = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      scrollProgress.style.width = (scrollTop / scrollHeight) * 100 + '%';
+    });
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => { header.classList.toggle('header--scrolled', window.scrollY > 50); });
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('active');
+      hamburger.classList.toggle('active');
+      document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+    });
+    function closeMobileNav() {
+      mobileNav.classList.remove('active');
+      hamburger.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
+        }
+      });
+    });
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); revealObserver.unobserve(entry.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    function animateCounters(entries) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.querySelectorAll('[data-count]').forEach(counter => {
+          if (counter.dataset.animated) return;
+          counter.dataset.animated = 'true';
+          const target = parseFloat(counter.dataset.count);
+          const isFloat = target % 1 !== 0;
+          const duration = 2000;
+          const startTime = performance.now();
+          function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 4);
+            const current = target * eased;
+            if (target >= 1000) counter.textContent = Math.floor(current).toLocaleString();
+            else if (isFloat) counter.textContent = current.toFixed(1);
+            else counter.textContent = Math.floor(current);
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          requestAnimationFrame(update);
+        });
+      });
+    }
+    const counterObserver = new IntersectionObserver(animateCounters, { threshold: 0.3 });
+    document.querySelectorAll('.hero__stats-bar, .guide__stats').forEach(el => counterObserver.observe(el));
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const rotateX = ((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2) * -4;
+        const rotateY = ((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2) * 4;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)'; });
+    });
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        btn.style.transform = `translate(${(e.clientX - rect.left - rect.width / 2) * 0.15}px, ${(e.clientY - rect.top - rect.height / 2) * 0.15}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; });
+    });
+    window.addEventListener('scroll', () => {
+      const scrollY = window.pageYOffset;
+      document.querySelectorAll('.hero__orb').forEach((orb, i) => { orb.style.transform = `translateY(${scrollY * (i + 1) * 0.03}px)`; });
+    });
+  </script>
+
+
+
+</body></html>
